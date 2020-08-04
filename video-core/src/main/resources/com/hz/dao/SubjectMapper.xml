@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.hz.dao.SubjectMapper">
+  <resultMap id="SubjectMap" type="Subject">
+      <id column="id" property="id"/>
+      <result column="subject_name" property="subjectName"/>
+  </resultMap>
+
+    <select id="selectSubjectById" resultMap="SubjectMap" parameterType="integer">
+        select id, subject_name from subject where id = #{id}
+    </select>
+
+    <select id="selectAllSubject" resultMap="SubjectMap">
+        select id, subject_name from subject
+    </select>
+
+    <resultMap id="SubjectMaps" type="Subject" extends="SubjectMap">
+        <collection property="courses" column="id" ofType="Course"
+                    fetchType="eager"
+                    select="com.hz.dao.CourseMapper.selectCourseByIdJoinVideo"></collection>
+    </resultMap>
+
+    <select id="selectSubjectBySubjectId" parameterType="integer" resultMap="SubjectMaps">
+        select * from subject where id = #{id}
+    </select>
+</mapper>

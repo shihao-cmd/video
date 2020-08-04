@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.hz.dao.CourseMapper">
+  <resultMap id="CourseMap" type="Course">
+      <id column="id" property="id"/>
+      <result column="course_title" property="courseTitle"/>
+      <result column="subject_id" property="subjectId"/>
+<!--      <collection property="videos" column="id" fetchType="eager"
+                  ofType="Video"
+                  select="com.hz.dao.VideoMapper.selectVideoByCourseId"/>-->
+  </resultMap>
+    <resultMap id="CourseMaps" type="Course" extends="CourseMap">
+        <result column="course_desc" property="courseDesc"/>
+    </resultMap>
+
+    <resultMap id="CourseMap2" type="Course" extends="CourseMap">
+        <id column="id" property="id"/>
+        <result column="course_title" property="courseTitle"/>
+        <result column="subject_id" property="subjectId"/>
+        <result column="course_desc" property="courseDesc"/>
+        <association property="subject" column="subject_id"
+                     select="com.hz.dao.SubjectMapper.selectSubjectById"></association>
+    </resultMap>
+
+    <resultMap id="CourseMapVideo" type="Course">
+        <id column="id" property="id"/>
+        <result column="course_title" property="courseTitle"/>
+        <result column="subject_id" property="subjectId"/>
+        <result column="course_desc" property="courseDesc"/>
+        <collection property="videos" column="id" fetchType="eager"
+                  ofType="Video"
+                  select="com.hz.dao.VideoMapper.selectVideoByIdJoin"/>
+    </resultMap>
+
+    <select id="selectCourseByCourseId" parameterType="integer" resultMap="CourseMapVideo">
+        select * from course where id = #{id}
+    </select>
+
+    <select id="selectCourseByIdJoinVideo" parameterType="integer" resultMap="CourseMapVideo">
+        select * from course where subject_id = #{id}
+    </select>
+
+    <select id="selectAllCourseToTable" resultMap="CourseMap2">
+        select id, course_title, subject_id, course_desc from course limit #{start},#{limit}
+    </select>
+
+    <select id="selectAllCourseCount" parameterType="integer" resultType="integer">
+        select count(1) from course
+    </select>
+
+  <select id="selectCourseById" parameterType="integer" resultMap="CourseMaps">
+    select id, course_title, subject_id, course_desc from course where id = #{id}
+  </select>
+
+    <select id="selectAllCourse" resultMap="CourseMaps">
+        select id, course_title, subject_id, course_desc from course
+    </select>
+
+    <delete id="delectCourseById" parameterType="integer">
+        delete from course where id = #{id}
+    </delete>
+
+    <update id="updateCourseById" parameterType="Subject">
+        update course set course_title = #{courseTitle}, subject_id = #{subjectId}, course_desc = #{courseDesc}
+                where id = #{id}
+    </update>
+
+    <insert id="insertCourse" parameterType="Course">
+        insert into course(course_title, subject_id, course_desc)
+                values(#{courseTitle}, #{subjectId}, #{courseDesc})
+    </insert>
+</mapper>

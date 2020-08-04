@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.hz.dao.SpeakerMapper">
+  <resultMap id="SpeakerMap" type="Speaker">
+      <id column="id" property="id"/>
+      <result column="speaker_name" property="speakerName"/>
+      <result column="speaker_job" property="speakerJob"/>
+      <result column="speaker_img_url" property="speakerImgUrl"/>
+<!--      <collection property="videos"
+                  column="id"
+                  ofType="Video" fetchType="eager"
+                  select="com.hz.dao.VideoMapper.selectVideoBySpeakerId"/>-->
+  </resultMap>
+    <resultMap id="SpeakerMaps" type="Speaker" extends="SpeakerMap">
+        <result column="speaker_desc" property="speakerDesc"/>
+    </resultMap>
+
+    <select id="selectSpeakerById" parameterType="integer" resultMap="SpeakerMaps">
+        select id, speaker_name, speaker_job, speaker_img_url, speaker_desc from speaker
+        where id = #{id}
+    </select>
+
+    <select id="selectAllSpeakerToTable" resultMap="SpeakerMaps">
+        select id, speaker_name, speaker_job, speaker_img_url, speaker_desc from speaker
+            limit #{start},#{limit}
+    </select>
+
+    <select id="selectAllSpeakerCount" resultType="integer">
+        select count(1) from speaker
+    </select>
+
+    <select id="selectAllSpeaker" resultMap="SpeakerMaps">
+        select  id, speaker_name, speaker_job, speaker_img_url, speaker_desc
+        from speaker
+    </select>
+
+    <delete id="deleteSpeakerById" parameterType="integer">
+        delete from speaker where id = #{id}
+    </delete>
+
+    <insert id="insertSpeaker" parameterType="Speaker">
+        insert into speaker(speaker_name, speaker_job, speaker_img_url, speaker_desc)
+                values (#{speakerName}, #{speakerJob}, #{speakerImgUrl}, #{speakerDesc})
+    </insert>
+
+    <update id="layerUpdateSpeaker" parameterType="Speaker">
+        update speaker set speaker_name = #{speakerName}, speaker_job = #{speakerJob},
+                         speaker_img_url = #{speakerImgUrl},speaker_desc = #{speakerDesc}
+                where id = #{id}
+    </update>
+</mapper>

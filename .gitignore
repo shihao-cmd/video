@@ -1,0 +1,4 @@
+# Project exclude paths
+/video-admin/target/
+/video-core/target/
+/video-web/target/
